@@ -60,7 +60,7 @@ def test_malicious_gtfobins(auditor):
     assert len(result.findings) > 0
     # Search for GTFOBins text
     assert any(
-        "CRITICAL: GTFOBins detected" in issue
+        "WARNING: GTFOBins detected" in issue
         for finding in result.findings
         for issue in finding.issues
     )

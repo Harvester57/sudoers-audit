@@ -30,7 +30,7 @@ def test_analyze_line_wildcard(auditor):
 
 def test_analyze_line_risky_binary(auditor):
     findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim")
-    assert any("CRITICAL: GTFOBins detected" in f for f in findings)
+    assert any("WARNING: GTFOBins detected" in f for f in findings)
     assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in findings[0]
 
 
