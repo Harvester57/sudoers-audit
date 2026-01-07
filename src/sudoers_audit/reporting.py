@@ -4,26 +4,31 @@ import html
 from datetime import datetime
 from .auditor import FileAuditResult
 
+
 class ReportGenerator:
     @staticmethod
     def generate_csv(results: list[FileAuditResult], output_file: str):
-        with open(output_file, 'w', newline='', encoding='utf-8') as f:
+        with open(output_file, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(["File", "Line Number", "Line Content", "Issue"])
-            
+
             for result in results:
                 if result.error:
-                    writer.writerow([result.file_path, "N/A", "N/A", f"ERROR: {result.error}"])
+                    writer.writerow(
+                        [result.file_path, "N/A", "N/A", f"ERROR: {result.error}"]
+                    )
                     continue
-                    
+
                 for finding in result.findings:
                     for issue in finding.issues:
-                        writer.writerow([
-                            result.file_path,
-                            finding.line_number,
-                            finding.line_content,
-                            issue
-                        ])
+                        writer.writerow(
+                            [
+                                result.file_path,
+                                finding.line_number,
+                                finding.line_content,
+                                issue,
+                            ]
+                        )
 
     @staticmethod
     def generate_html(results: list[FileAuditResult], output_file: str):
@@ -59,16 +64,20 @@ class ReportGenerator:
 
         for result in results:
             html_content += f'<div class="file-section"><div class="file-header">{html.escape(result.file_path)}</div>'
-            
+
             if result.error:
-                html_content += f'<div class="error">Error: {html.escape(result.error)}</div>'
+                html_content += (
+                    f'<div class="error">Error: {html.escape(result.error)}</div>'
+                )
             elif not result.findings:
-                html_content += '<div class="finding" style="color: green;">No issues found.</div>'
+                html_content += (
+                    '<div class="finding" style="color: green;">No issues found.</div>'
+                )
             else:
                 for finding in result.findings:
                     html_content += '<div class="finding">'
                     html_content += f'<div>Line <span class="line-info">{finding.line_number}</span>: <code>{html.escape(finding.line_content)}</code></div>'
-                    html_content += '<ul>'
+                    html_content += "<ul>"
                     for issue in finding.issues:
                         severity_class = ""
                         if "CRITICAL" in issue:
@@ -79,19 +88,21 @@ class ReportGenerator:
                             severity_class = "medium"
                         elif "WARNING" in issue:
                             severity_class = "warning"
-                        
-                        html_content += f'<li class="{severity_class}">{html.escape(issue)}</li>'
-                    html_content += '</ul></div>'
-            
-            html_content += '</div>'
+
+                        html_content += (
+                            f'<li class="{severity_class}">{html.escape(issue)}</li>'
+                        )
+                    html_content += "</ul></div>"
+
+            html_content += "</div>"
 
         html_content += """
             </div>
         </body>
         </html>
         """
-        
-        with open(output_file, 'w', encoding='utf-8') as f:
+
+        with open(output_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
     @staticmethod
@@ -105,12 +116,12 @@ class ReportGenerator:
                         "driver": {
                             "name": "SudoersAudit",
                             "version": "1.0.0",
-                            "informationUri": "https://github.com/example/sudoers-audit"
+                            "informationUri": "https://github.com/example/sudoers-audit",
                         }
                     },
-                    "results": []
+                    "results": [],
                 }
-            ]
+            ],
         }
 
         for result in results:
@@ -126,9 +137,9 @@ class ReportGenerator:
                         level = "error"
                     elif "NOTE" in issue:
                         level = "note"
-                    
+
                     # Extract rule ID if possible or make generic
-                    rule_id = "SUDO001" 
+                    rule_id = "SUDO001"
                     if "ALL" in issue:
                         rule_id = "SUDO001"
                     elif "NOPASSWD" in issue:
@@ -145,23 +156,21 @@ class ReportGenerator:
                     sarif_result = {
                         "ruleId": rule_id,
                         "level": level,
-                        "message": {
-                            "text": issue
-                        },
+                        "message": {"text": issue},
                         "locations": [
                             {
                                 "physicalLocation": {
                                     "artifactLocation": {
-                                        "uri": result.file_path.replace("\\", "/") # SARIF prefers forward slashes
+                                        "uri": result.file_path.replace(
+                                            "\\", "/"
+                                        )  # SARIF prefers forward slashes
                                     },
-                                    "region": {
-                                        "startLine": finding.line_number
-                                    }
+                                    "region": {"startLine": finding.line_number},
                                 }
                             }
-                        ]
+                        ],
                     }
                     sarif_log["runs"][0]["results"].append(sarif_result)
 
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             json.dump(sarif_log, f, indent=2)
