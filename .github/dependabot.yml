@@ -2,5 +2,20 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    assignees:
+    - "Harvester57"
     schedule:
       interval: daily
+  - package-ecosystem: "docker"
+    directory: "/"
+    commit-message:
+      prefix: "docker"
+    assignees:
+    - "Harvester57"
+    schedule:
+      interval: daily
+    groups:
+      docker-dependencies:
+        applies-to: version-updates
+        patterns:
+        - "*"

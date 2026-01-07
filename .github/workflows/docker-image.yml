@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main", "dev", "dev-*" ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ "main", "dev", "dev-*" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    permissions:
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+      attestations: write
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      artifact-metadata: write
+    uses: Harvester57/reusable-workflows/.github/workflows/docker-reusable-build.yml@main
