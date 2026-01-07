@@ -1,5 +1,4 @@
 import pytest
-import os
 import json
 from sudoers_audit.auditor import FileAuditResult, Finding
 from sudoers_audit.reporting import ReportGenerator

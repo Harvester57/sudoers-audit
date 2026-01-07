@@ -71,10 +71,14 @@ class ReportGenerator:
                     html_content += '<ul>'
                     for issue in finding.issues:
                         severity_class = ""
-                        if "CRITICAL" in issue: severity_class = "critical"
-                        elif "HIGH" in issue: severity_class = "high"
-                        elif "MEDIUM" in issue: severity_class = "medium"
-                        elif "WARNING" in issue: severity_class = "warning"
+                        if "CRITICAL" in issue:
+                            severity_class = "critical"
+                        elif "HIGH" in issue:
+                            severity_class = "high"
+                        elif "MEDIUM" in issue:
+                            severity_class = "medium"
+                        elif "WARNING" in issue:
+                            severity_class = "warning"
                         
                         html_content += f'<li class="{severity_class}">{html.escape(issue)}</li>'
                     html_content += '</ul></div>'
@@ -117,7 +121,6 @@ class ReportGenerator:
 
             for finding in result.findings:
                 for issue in finding.issues:
-                    severity = "warning"
                     level = "warning"
                     if "CRITICAL" in issue or "HIGH" in issue:
                         level = "error"
@@ -126,12 +129,18 @@ class ReportGenerator:
                     
                     # Extract rule ID if possible or make generic
                     rule_id = "SUDO001" 
-                    if "ALL" in issue: rule_id = "SUDO001"
-                    elif "NOPASSWD" in issue: rule_id = "SUDO002"
-                    elif "Wildcard" in issue: rule_id = "SUDO003"
-                    elif "GTFOBins" in issue: rule_id = "SUDO004"
-                    elif "!requiretty" in issue: rule_id = "SUDO005"
-                    elif "Recursive" in issue: rule_id = "SUDO006"
+                    if "ALL" in issue:
+                        rule_id = "SUDO001"
+                    elif "NOPASSWD" in issue:
+                        rule_id = "SUDO002"
+                    elif "Wildcard" in issue:
+                        rule_id = "SUDO003"
+                    elif "GTFOBins" in issue:
+                        rule_id = "SUDO004"
+                    elif "!requiretty" in issue:
+                        rule_id = "SUDO005"
+                    elif "Recursive" in issue:
+                        rule_id = "SUDO006"
 
                     sarif_result = {
                         "ruleId": rule_id,
