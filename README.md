@@ -5,8 +5,10 @@
 ## Features
 
 - **Recursive Analysis**: Audit a single `sudoers` file or an entire directory of configuration files.
-- **Security Checks**: Detects common issues such as `NOPASSWD` usage, unrestricted command access, and dangerous environment variables.
-- **Multiple Output Formats**: Generate reports in CSV, HTML, or SARIF formats for integration with other tools or human review.
+- **Security Checks**: Detects common issues such as `NOPASSWD` usage, unrestricted command access (`ALL`), and dangerous environment variables (`env_keep`).
+- **Hardening Verification**: Checks for hardening rules including wildcard abuse, Privilege Scope violations, `!authenticate` settings, and more.
+- **Filesystem Permissions**: Optionally verifies that sudoers configuration files are owned by root and not writable by others (requires running on the target system).
+- **Multiple Output Formats**: Generate reports in CSV, HTML, or SARIF formats.
 
 ## Installation
 
@@ -37,6 +39,7 @@ sudoers-audit <path> [options]
 | `path` | | **Required** | Path to the `sudoers` file or directory to audit. |
 | `--format`| `-f` | Optional | Output format for the report. Choices: `csv`, `html`, `sarif`. |
 | `--output`| `-o` | Optional | Output file path for the report. **Required** if `--format` is specified. |
+| `--check-permissions`| `-p` | Flag | Enable filesystem permission checks (ownership/write permissions). **Requires execution on the target system.** |
 | `--help` | `-h` | Flag | Show the help message and exit. |
 
 ### Examples
