@@ -31,7 +31,7 @@ def test_analyze_line_wildcard(auditor):
 def test_analyze_line_risky_binary(auditor):
     findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim")
     assert any("CRITICAL: GTFOBins detected" in f for f in findings)
-    assert "vim" in findings[0]
+    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in findings[0]
 
 
 def test_analyze_line_safe(auditor):
@@ -44,8 +44,8 @@ def test_analyze_line_multiple_risky(auditor):
     findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim /usr/bin/bash")
     # Both vim and bash are risky
     combined_msg = "".join(findings)
-    assert "vim" in combined_msg
-    assert "bash" in combined_msg
+    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
+    assert "bash: https://gtfobins.github.io/gtfobins/bash/#sudo" in combined_msg
 
 
 def test_audit_file(auditor, tmp_path):

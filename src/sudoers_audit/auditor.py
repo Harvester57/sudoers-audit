@@ -71,8 +71,10 @@ class SudoersAuditor:
                         found_binaries.append(binary)
 
         if found_binaries:
+            # Format: binary: URL
+            binaries_with_urls = [f"{b}: {RISKY_BINARIES[b]}" for b in found_binaries]
             issues.append(
-                f"CRITICAL: GTFOBins detected ({', '.join(found_binaries)}). Known shell escape/privesc vectors."
+                f"WARNING: GTFOBins detected ({', '.join(binaries_with_urls)}). Known shell escape/privesc vectors."
             )
 
         # 5. Detection of !requiretty
