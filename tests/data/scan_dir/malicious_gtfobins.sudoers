@@ -1,0 +1,8 @@
+# Malicious sudoers file with GTFOBins
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Risky entry
+hacker  ALL=(ALL) /usr/bin/vim
+script_kiddie ALL=(ALL) /bin/bash

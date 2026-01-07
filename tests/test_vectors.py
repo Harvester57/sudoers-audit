@@ -37,7 +37,7 @@ def test_malicious_wildcard(auditor):
     assert result.error is None
     assert len(result.findings) > 0
     assert any(
-        "HIGH: Wildcard '*' detected" in issue
+        "CRITICAL: Wildcard detected in binary path" in issue
         for finding in result.findings
         for issue in finding.issues
     )

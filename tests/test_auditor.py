@@ -25,7 +25,7 @@ def test_analyze_line_nopasswd(auditor):
 
 def test_analyze_line_wildcard(auditor):
     findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/*")
-    assert any("HIGH: Wildcard '*' detected" in f for f in findings)
+    assert any("CRITICAL: Wildcard detected in binary path" in f for f in findings)
 
 
 def test_analyze_line_risky_binary(auditor):
@@ -63,3 +63,12 @@ def test_audit_file(auditor, tmp_path):
         for finding in result.findings
         for issue in finding.issues
     )
+
+
+def test_analyze_line_nopasswd_relative_path(auditor):
+    # Regression test for NOPASSWD being mistaken for a relative path
+    findings = auditor.analyze_line(1, "user ALL=(ALL) NOPASSWD: /usr/bin/ls")
+    # Should NOT have "Relative path detected"
+    assert not any("Relative path detected" in f for f in findings)
+    # Should have NOPASSWD warning
+    assert any("WARNING: 'NOPASSWD' tag used" in f for f in findings)

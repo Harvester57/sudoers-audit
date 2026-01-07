@@ -1,0 +1,7 @@
+# Malicious sudoers file with ALL command
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Risky entry
+admin_user ALL=(ALL) ALL

@@ -49,13 +49,14 @@ class SudoersAuditor:
 
         # 3. Detection of Wildcards in path or arguments
         if "*" in line:
-            issues.append(
-                "HIGH: Wildcard '*' detected. Vulnerable to path traversal/argument injection."
-            )
             # Wildcard in binary path check
             if re.search(r"/\S*\*(?:$|\s)", line.split("=")[1] if "=" in line else ""):
                 issues.append(
                     "CRITICAL: Wildcard detected in binary path. Potential for high-risk binary execution."
+                )
+            else:
+                issues.append(
+                    "HIGH: Wildcard '*' detected. Potentially vulnerable to argument injection."
                 )
 
         # 4. Privilege Scope: RunAs ALL or Negation rules
@@ -118,6 +119,9 @@ class SudoersAuditor:
                 clean_command_part = re.sub(
                     r"^\([\w\:\.\-]+\)\s+", "", command_part.strip()
                 )
+                # Strip sudo tags (e.g. NOPASSWD:, EXEC:, SETENV:)
+                clean_command_part = re.sub(r"^[A-Z_]+:\s*", "", clean_command_part)
+
                 cmd_start = clean_command_part.split(" ")[0]
 
                 if not cmd_start.startswith("/") and cmd_start != "ALL":
@@ -170,7 +174,9 @@ class SudoersAuditor:
 
             if not os.path.exists(path):
                 # Warning is enough, might be a valid command not on this system
-                # issues.append(f"LOW: Referenced file '{path}' not found on this system.")
+                issues.append(
+                    f"LOW: Referenced file '{path}' not found on this system."
+                )
                 return issues
 
             st = os.stat(path)
