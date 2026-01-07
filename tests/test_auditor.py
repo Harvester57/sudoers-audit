@@ -72,3 +72,35 @@ def test_analyze_line_nopasswd_relative_path(auditor):
     assert not any("Relative path detected" in f for f in findings)
     # Should have NOPASSWD warning
     assert any("WARNING: 'NOPASSWD' tag used" in f for f in findings)
+
+
+def test_analyze_line_option_relative_path(auditor):
+    # Regression test for options like !requiretty being mistaken for a relative path
+    findings = auditor.analyze_line(
+        1, "bad_script ALL=(ALL) !requiretty /opt/db/cleanup.sh"
+    )
+    # Should NOT have "Relative path detected"
+    assert not any("Relative path detected" in f for f in findings)
+    # Should have !requiretty warning
+    assert any("!requiretty" in f for f in findings)
+
+
+def test_analyze_line_complex_stripping(auditor):
+    # Test multiple tags and options
+    line = "complex ALL=(ALL) NOPASSWD: EXEC: !requiretty !visiblepw env_reset=true /bin/ls"
+    findings = auditor.analyze_line(1, line)
+    # Should NOT have "Relative path detected"
+    assert not any("Relative path detected" in f for f in findings)
+    # Should have NOPASSWD warning
+    assert any("WARNING: 'NOPASSWD' tag used" in f for f in findings)
+    # Should have !requiretty warning
+    assert any("!requiretty" in f for f in findings)
+
+
+def test_analyze_line_option_relative_path_no_command(auditor):
+    # Regression test for options like !requiretty being mistaken for a relative path
+    findings = auditor.analyze_line(1, "bad_script ALL=(ALL) !requiretty")
+    # Should NOT have "Relative path detected"
+    assert not any("Relative path detected" in f for f in findings)
+    # Should have !requiretty warning
+    assert any("!requiretty" in f for f in findings)

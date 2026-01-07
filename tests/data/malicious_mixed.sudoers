@@ -6,5 +6,5 @@ root    ALL=(ALL:ALL) ALL
 # Risky entries
 super_risky ALL=(ALL) NOPASSWD: /usr/bin/*
 complex_risk ALL=(ALL) /usr/bin/vim /etc/passwd
-bad_script ALL=(ALL) !requiretty
+bad_script ALL=(ALL) !requiretty /opt/db/cleanup.sh --users *
 recursive_risk ALL=(ALL) /usr/bin/cp -r /tmp/source /tmp/dest

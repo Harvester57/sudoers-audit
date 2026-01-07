@@ -116,13 +116,33 @@ class SudoersAuditor:
                 command_part = parts[1]
 
                 # Check for relative paths
-                clean_command_part = re.sub(
-                    r"^\([\w\:\.\-]+\)\s+", "", command_part.strip()
-                )
-                # Strip sudo tags (e.g. NOPASSWD:, EXEC:, SETENV:)
-                clean_command_part = re.sub(r"^[A-Z_]+:\s*", "", clean_command_part)
+                clean_command_part = command_part.strip()
 
-                cmd_start = clean_command_part.split(" ")[0]
+                # Iteratively strip prefixes until no change
+                while True:
+                    original = clean_command_part
+                    # Strip RunAs
+                    clean_command_part = re.sub(
+                        r"^\([\w\:\.\-]+\)\s+", "", clean_command_part
+                    )
+                    # Strip sudo tags (e.g. NOPASSWD:, EXEC:, SETENV:)
+                    clean_command_part = re.sub(r"^[A-Z_]+:\s*", "", clean_command_part)
+                    # Strip overrides (e.g. !requiretty, env_reset)
+                    clean_command_part = re.sub(
+                        r"^\![\w]+(?:$|\s+)", "", clean_command_part
+                    )
+                    clean_command_part = re.sub(
+                        r"^\w+=\w+(?:$|\s+)", "", clean_command_part
+                    )  # Key=value settings
+
+                    if clean_command_part == original:
+                        break
+
+                if not clean_command_part:
+                    # No command specified, just options
+                    cmd_start = "ALL"
+                else:
+                    cmd_start = clean_command_part.split(" ")[0]
 
                 if not cmd_start.startswith("/") and cmd_start != "ALL":
                     issues.append(
