@@ -1,0 +1,32 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Sudoers Audit Report</title>
+            <style>
+                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 2rem; background: #f4f4f9; }
+                .container { max-width: 1200px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+                h1 { border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+                .file-section { margin-top: 2rem; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
+                .file-header { background: #f8f8f8; padding: 0.5rem 1rem; font-weight: bold; border-bottom: 1px solid #ddd; }
+                .finding { padding: 1rem; border-bottom: 1px solid #eee; }
+                .finding:last-child { border-bottom: none; }
+                .line-info { font-family: monospace; background: #f0f0f0; padding: 0.2rem 0.4rem; border-radius: 3px; }
+                .critical { color: #d32f2f; font-weight: bold; }
+                .high { color: #f57c00; font-weight: bold; }
+                .medium { color: #fbc02d; font-weight: bold; }
+                .warning { color: #ffa000; font-weight: bold; }
+                .error { color: #c62828; padding: 1rem; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Sudoers Audit Report</h1>
+                <p>Generated on: 2026-01-07 14:04:03</p>
+        <div class="file-section"><div class="file-header">dummy_sudoers</div><div class="finding"><div>Line <span class="line-info">8</span>: <code>root    ALL=(ALL:ALL) ALL</code></div><ul><li class="critical">CRITICAL: &#x27;ALL&#x27; command granted. Allows execution of any binary.</li></ul></div><div class="finding"><div>Line <span class="line-info">9</span>: <code>florian ALL=(ALL) NOPASSWD: /usr/bin/vim</code></div><ul><li class="warning">WARNING: &#x27;NOPASSWD&#x27; tag used. Removes authentication barrier.</li><li class="critical">CRITICAL: GTFOBins detected (vim). Known shell escape/privesc vectors.</li></ul></div><div class="finding"><div>Line <span class="line-info">10</span>: <code>hacker  ALL=(ALL) /bin/bash</code></div><ul><li class="critical">CRITICAL: GTFOBins detected (bash). Known shell escape/privesc vectors.</li></ul></div><div class="finding"><div>Line <span class="line-info">11</span>: <code>wildcard ALL=(ALL) /usr/bin/*</code></div><ul><li class="high">HIGH: Wildcard &#x27;*&#x27; detected. Vulnerable to path traversal/argument injection.</li></ul></div></div>
+            </div>
+        </body>
+        </html>
+        

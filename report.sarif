@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "SudoersAudit",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/example/sudoers-audit"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "SUDO001",
+          "level": "error",
+          "message": {
+            "text": "CRITICAL: 'ALL' command granted. Allows execution of any binary."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "dummy_sudoers"
+                },
+                "region": {
+                  "startLine": 8
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SUDO002",
+          "level": "warning",
+          "message": {
+            "text": "WARNING: 'NOPASSWD' tag used. Removes authentication barrier."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "dummy_sudoers"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SUDO004",
+          "level": "error",
+          "message": {
+            "text": "CRITICAL: GTFOBins detected (vim). Known shell escape/privesc vectors."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "dummy_sudoers"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SUDO004",
+          "level": "error",
+          "message": {
+            "text": "CRITICAL: GTFOBins detected (bash). Known shell escape/privesc vectors."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "dummy_sudoers"
+                },
+                "region": {
+                  "startLine": 10
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "SUDO003",
+          "level": "error",
+          "message": {
+            "text": "HIGH: Wildcard '*' detected. Vulnerable to path traversal/argument injection."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "dummy_sudoers"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

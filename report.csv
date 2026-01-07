@@ -1,0 +1,6 @@
+File,Line Number,Line Content,Issue
+dummy_sudoers,8,root    ALL=(ALL:ALL) ALL,CRITICAL: 'ALL' command granted. Allows execution of any binary.
+dummy_sudoers,9,florian ALL=(ALL) NOPASSWD: /usr/bin/vim,WARNING: 'NOPASSWD' tag used. Removes authentication barrier.
+dummy_sudoers,9,florian ALL=(ALL) NOPASSWD: /usr/bin/vim,CRITICAL: GTFOBins detected (vim). Known shell escape/privesc vectors.
+dummy_sudoers,10,hacker  ALL=(ALL) /bin/bash,CRITICAL: GTFOBins detected (bash). Known shell escape/privesc vectors.
+dummy_sudoers,11,wildcard ALL=(ALL) /usr/bin/*,HIGH: Wildcard '*' detected. Vulnerable to path traversal/argument injection.

@@ -1,0 +1,11 @@
+
+# Default defaults
+Defaults        env_reset
+Defaults        mail_badpass
+Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+florian ALL=(ALL) NOPASSWD: /usr/bin/vim
+hacker  ALL=(ALL) /bin/bash
+wildcard ALL=(ALL) /usr/bin/*
