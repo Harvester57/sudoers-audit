@@ -1,0 +1,7 @@
+# Malicious sudoers file with NOPASSWD
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Risky entry
+mallory ALL=(ALL) NOPASSWD: /usr/bin/ls

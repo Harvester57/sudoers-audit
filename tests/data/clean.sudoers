@@ -1,0 +1,10 @@
+# Benign sudoers file
+Defaults        env_reset
+Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# User privilege specification
+# root    ALL=(ALL:ALL) ALL
+
+# Benign user entry
+alice   ALL=(ALL) /usr/bin/ls
+bob     ALL=(ALL) /usr/bin/echo "update finished"

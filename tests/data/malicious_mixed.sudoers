@@ -1,0 +1,10 @@
+# Malicious sudoers file with Mixed findings
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Risky entries
+super_risky ALL=(ALL) NOPASSWD: /usr/bin/*
+complex_risk ALL=(ALL) /usr/bin/vim /etc/passwd
+bad_script ALL=(ALL) !requiretty
+recursive_risk ALL=(ALL) /usr/bin/cp -r /tmp/source /tmp/dest
