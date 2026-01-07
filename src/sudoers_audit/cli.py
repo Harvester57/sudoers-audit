@@ -17,6 +17,12 @@ def main():
         help="Output format for the report",
     )
     parser.add_argument("-o", "--output", help="Output file path for the report")
+    parser.add_argument(
+        "-p",
+        "--check-permissions",
+        action="store_true",
+        help="Enable filesystem permission checks (requires running on the target system)",
+    )
     args = parser.parse_args()
 
     auditor = SudoersAuditor()
@@ -30,9 +36,11 @@ def main():
     if os.path.isdir(target):
         for root, _, files in os.walk(target):
             for file in files:
-                results.append(auditor.audit_file(os.path.join(root, file)))
+                results.append(
+                    auditor.audit_file(os.path.join(root, file), args.check_permissions)
+                )
     else:
-        results.append(auditor.audit_file(target))
+        results.append(auditor.audit_file(target, args.check_permissions))
 
     # Generate Report if requested
     if args.format and args.output:
@@ -48,9 +56,7 @@ def main():
             print(f"ERROR: Failed to generate report: {e}")
             sys.exit(1)
 
-    # Default behavior: Print to stdout if no report requested OR if user wants to see output anyway (maybe? let's stick to simple logic: if report, don't print? Or always print? The original behavior was always print.)
-    # The plan said: "If no report format is specified, print to console".
-    # Let's enforce: If NO format is specified, print to console.
+    # Default behavior: Print to stdout if no report requested
     elif not args.format:
         for result in results:
             print(f"--- Auditing {result.file_path} ---")
@@ -63,9 +69,6 @@ def main():
                         print(f"  [!] {issue}")
                     print("")
     else:
-        # Format specified but no output file? defaults? Or error? argparse handles required args if I set them, but here they are optional.
-        # If format is specified but no output file, maybe print to stdout in that format?
-        # For now, let's just warn or require output. The plan impl said "args.format and args.output".
         if args.format and not args.output:
             print("ERROR: --output required when --format is specified.")
             sys.exit(1)

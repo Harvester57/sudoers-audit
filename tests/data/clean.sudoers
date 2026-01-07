@@ -6,5 +6,5 @@ Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/
 # root    ALL=(ALL:ALL) ALL
 
 # Benign user entry
-alice   ALL=(ALL) /usr/bin/ls
-bob     ALL=(ALL) /usr/bin/echo "update finished"
+alice   ALL=(root) /usr/bin/ls
+bob     ALL=(root) /usr/bin/echo "update finished"

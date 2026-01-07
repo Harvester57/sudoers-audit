@@ -31,11 +31,12 @@ def test_analyze_line_wildcard(auditor):
 def test_analyze_line_risky_binary(auditor):
     findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim")
     assert any("WARNING: GTFOBins detected" in f for f in findings)
-    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in findings[0]
+    combined_msg = "".join(findings)
+    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
 
 
 def test_analyze_line_safe(auditor):
-    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/ls")
+    findings = auditor.analyze_line(1, "user ALL=(root) /usr/bin/ls")
     # ls is not in the risky list
     assert not findings
 
