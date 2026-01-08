@@ -1,6 +1,7 @@
 import re
 from typing import List
 from .base import AuditRule
+from sudoers_audit.utils import clean_command_string
 
 
 class AllCommandRule(AuditRule):
@@ -47,23 +48,7 @@ class RelativePathRule(AuditRule):
             return []
 
         command_part = parts[1]
-        clean_command_part = command_part.strip()
-
-        # Iteratively strip prefixes until no change
-        while True:
-            original = clean_command_part
-            # Strip RunAs
-            clean_command_part = re.sub(r"^\([\w\:\.\-]+\)\s+", "", clean_command_part)
-            # Strip sudo tags (e.g. NOPASSWD:, EXEC:, SETENV:)
-            clean_command_part = re.sub(r"^[A-Z_]+:\s*", "", clean_command_part)
-            # Strip overrides (e.g. !requiretty, env_reset)
-            clean_command_part = re.sub(r"^\![\w]+(?:$|\s+)", "", clean_command_part)
-            clean_command_part = re.sub(
-                r"^\w+=\w+(?:$|\s+)", "", clean_command_part
-            )  # Key=value settings
-
-            if clean_command_part == original:
-                break
+        clean_command_part = clean_command_string(command_part)
 
         if not clean_command_part:
             # No command specified, just options

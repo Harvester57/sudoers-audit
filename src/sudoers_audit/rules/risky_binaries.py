@@ -2,6 +2,7 @@ import re
 from typing import List
 from .base import AuditRule
 from ..data import RISKY_BINARIES
+from sudoers_audit.utils import clean_command_string
 
 
 class RiskyBinariesRule(AuditRule):
@@ -14,7 +15,7 @@ class RiskyBinariesRule(AuditRule):
         if "=" in line and not line.strip().startswith("Defaults"):
             parts = line.split("=", 1)
             if len(parts) > 1:
-                command_part = parts[1]
+                command_part = clean_command_string(parts[1])
 
                 # Check against every risky binary
                 for binary in RISKY_BINARIES:
