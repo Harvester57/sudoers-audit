@@ -32,6 +32,28 @@ The basic usage requires providing the path to a `sudoers` file or a directory c
 sudoers-audit <path> [options]
 ```
 
+## Docker usage
+
+You can also run `sudoers-audit` using Docker.
+
+### Pulling from GitHub Container Registry
+
+To use the pre-built image:
+
+```bash
+docker pull ghcr.io/harvester57/sudoers-audit:latest
+docker run --rm -v $(pwd):/data ghcr.io/harvester57/sudoers-audit:latest /etc/sudoers
+```
+
+### Building locally
+
+To build the image locally:
+
+```bash
+docker build -t sudoers-audit .
+docker run --rm -v $(pwd):/data sudoers-audit /etc/sudoers
+```
+
 ### CLI Arguments
 
 | Argument | Short | Type | Description |
