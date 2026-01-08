@@ -1,6 +1,5 @@
 import re
 import os
-import stat
 from dataclasses import dataclass, field
 
 
