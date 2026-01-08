@@ -42,11 +42,19 @@ def test_analyze_line_safe(auditor):
 
 
 def test_analyze_line_multiple_risky(auditor):
-    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim /usr/bin/bash")
-    # Both vim and bash are risky
+    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim, /usr/bin/bash")
+    # Both vim and bash are risky and should be detected even if separated by comma
     combined_msg = "".join(findings)
     assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
     assert "bash: https://gtfobins.github.io/gtfobins/bash/#sudo" in combined_msg
+
+
+def test_analyze_line_multiple_commands_mixed_safety(auditor):
+    # Test identifying a risky binary when it is second in the list
+    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/ls, /usr/bin/vim")
+    combined_msg = "".join(findings)
+    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
+    # Ensure ls didn't trigger a false positive (though ls isn't risky anyway)
 
 
 def test_audit_file(auditor, tmp_path):
@@ -104,3 +112,27 @@ def test_analyze_line_option_relative_path_no_command(auditor):
     assert not any("Relative path detected" in f for f in findings)
     # Should have !requiretty warning
     assert any("!requiretty" in f for f in findings)
+
+
+def test_analyze_line_risky_binary_runas_stripping(auditor):
+    # Regression test for RunAs prefix stripping check (e.g. (ALL) (ALL))
+    findings = auditor.analyze_line(1, "user2 ALL=(ALL) (ALL) /bin/bash")
+    assert any("WARNING: GTFOBins detected" in f for f in findings)
+    combined_msg = "".join(findings)
+    assert "bash: https://gtfobins.github.io/gtfobins/bash/#sudo" in combined_msg
+
+
+def test_analyze_line_relative_path_with_nopasswd(auditor):
+    # Regression test for relative path with NOPASSWD prefix
+    findings = auditor.analyze_line(1, "user ALL=(ALL) NOPASSWD: relative/path")
+    assert any("HIGH: Relative path detected" in f for f in findings)
+    assert any("WARNING: 'NOPASSWD' tag used" in f for f in findings)
+
+
+def test_analyze_line_risky_binary_with_nopasswd(auditor):
+    # Regression test for risky binary with NOPASSWD prefix
+    findings = auditor.analyze_line(1, "user ALL=(ALL:ALL) NOPASSWD: /bin/sh")
+    assert any("WARNING: GTFOBins detected" in f for f in findings)
+    assert any("WARNING: 'NOPASSWD' tag used" in f for f in findings)
+    combined_msg = "".join(findings)
+    assert "sh: https://gtfobins.github.io/gtfobins/sh/#sudo" in combined_msg
