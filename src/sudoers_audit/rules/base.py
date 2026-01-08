@@ -1,11 +1,5 @@
 from typing import Protocol, List
-from dataclasses import dataclass
 import os
-
-
-@dataclass
-class AuditResult:
-    issues: List[str]
 
 
 class AuditRule(Protocol):
