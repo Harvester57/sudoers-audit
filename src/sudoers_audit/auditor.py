@@ -1,6 +1,7 @@
 import re
 import os
 from dataclasses import dataclass, field
+from .rules import get_all_rules, get_all_path_rules
 
 
 @dataclass
@@ -23,8 +24,6 @@ class SudoersAuditor:
     """
 
     def __init__(self):
-        from .rules import get_all_rules, get_all_path_rules
-
         self.rules = get_all_rules()
         self.path_rules = get_all_path_rules()
 
