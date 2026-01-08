@@ -43,22 +43,23 @@ class RelativePathRule(AuditRule):
         if "=" not in line or line.strip().startswith("Defaults"):
             return []
 
-        parts = line.split("=", 1)
-        if len(parts) <= 1:
-            return []
+        from sudoers_audit.utils import split_sudoers_commands
 
-        command_part = parts[1]
-        clean_command_part = clean_command_string(command_part)
+        issues = []
+        commands = split_sudoers_commands(line)
 
-        if not clean_command_part:
-            # No command specified, just options
-            cmd_start = "ALL"
-        else:
-            cmd_start = clean_command_part.split(" ")[0]
+        for command_part in commands:
+            clean_command_part = clean_command_string(command_part)
 
-        if not cmd_start.startswith("/") and cmd_start != "ALL":
-            return [
-                f"HIGH: Relative path detected for command '{cmd_start}'. Vulnerable to path interception."
-            ]
+            if not clean_command_part:
+                # No command specified, just options
+                cmd_start = "ALL"
+            else:
+                cmd_start = clean_command_part.split(" ")[0]
 
-        return []
+            if not cmd_start.startswith("/") and cmd_start != "ALL":
+                issues.append(
+                    f"HIGH: Relative path detected for command '{cmd_start}'. Vulnerable to path interception."
+                )
+
+        return issues

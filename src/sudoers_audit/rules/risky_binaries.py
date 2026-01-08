@@ -13,9 +13,12 @@ class RiskyBinariesRule(AuditRule):
         # Extract just the command part of the sudo rule (after the '=')
         # Skip Defaults lines as they don't contain commands in the same format
         if "=" in line and not line.strip().startswith("Defaults"):
-            parts = line.split("=", 1)
-            if len(parts) > 1:
-                command_part = clean_command_string(parts[1])
+            from sudoers_audit.utils import split_sudoers_commands
+
+            commands = split_sudoers_commands(line)
+
+            for command_part in commands:
+                cleaned_cmd = clean_command_string(command_part)
 
                 # Check against every risky binary
                 for binary in RISKY_BINARIES:
@@ -24,12 +27,15 @@ class RiskyBinariesRule(AuditRule):
                     # 2. binary     -> The binary name
                     # 3. (?:\s|$)   -> Match whitespace or end of string
                     pattern = r"(?:^|\/|\s){}(?:\s|$)".format(re.escape(binary))
-                    if re.search(pattern, command_part):
+
+                    if re.search(pattern, cleaned_cmd):
                         found_binaries.append(binary)
 
         if found_binaries:
             # Format: binary: URL
-            binaries_with_urls = [f"{b}: {RISKY_BINARIES[b]}" for b in found_binaries]
+            # Deduplicate found binaries
+            unique_binaries = sorted(list(set(found_binaries)))
+            binaries_with_urls = [f"{b}: {RISKY_BINARIES[b]}" for b in unique_binaries]
             issues.append(
                 f"WARNING: GTFOBins detected ({', '.join(binaries_with_urls)}). Known shell escape/privesc vectors."
             )

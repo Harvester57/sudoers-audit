@@ -1,7 +1,7 @@
-import re
 import os
 from dataclasses import dataclass, field
 from .rules import get_all_rules, get_all_path_rules
+from .utils import clean_command_string, split_sudoers_commands
 
 
 @dataclass
@@ -87,20 +87,12 @@ class SudoersAuditor:
                 issues = self.analyze_line(i + 1, line)
 
                 if check_permissions and "=" in line:
-                    # Extract command path
-                    parts = line.split("=", 1)
-                    if len(parts) > 1:
-                        cmd_part = parts[1].strip()
-                        # Simple extraction: binary is the first token
-                        # This works for "ALL = /bin/ls"
-                        # But also "ALL = (ALL) /bin/ls"
-                        # We need to handle optional (RunAs)
-
-                        cmd_path = cmd_part
-                        # Remove RunAs (user:group) or (user)
-                        cmd_path = re.sub(r"^\([\w\:\.\-]+\)\s+", "", cmd_path)
+                    # Extract command paths
+                    commands = split_sudoers_commands(line)
+                    for cmd_part in commands:
+                        cleaned_cmd = clean_command_string(cmd_part)
                         # Take the first token as the binary
-                        cmd_path = cmd_path.split(" ")[0]
+                        cmd_path = cleaned_cmd.split(" ")[0]
 
                         if cmd_path.startswith("/"):
                             perm_issues = self.check_file_permissions(cmd_path)

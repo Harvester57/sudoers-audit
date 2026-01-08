@@ -42,11 +42,19 @@ def test_analyze_line_safe(auditor):
 
 
 def test_analyze_line_multiple_risky(auditor):
-    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim /usr/bin/bash")
-    # Both vim and bash are risky
+    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/vim, /usr/bin/bash")
+    # Both vim and bash are risky and should be detected even if separated by comma
     combined_msg = "".join(findings)
     assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
     assert "bash: https://gtfobins.github.io/gtfobins/bash/#sudo" in combined_msg
+
+
+def test_analyze_line_multiple_commands_mixed_safety(auditor):
+    # Test identifying a risky binary when it is second in the list
+    findings = auditor.analyze_line(1, "user ALL=(ALL) /usr/bin/ls, /usr/bin/vim")
+    combined_msg = "".join(findings)
+    assert "vim: https://gtfobins.github.io/gtfobins/vim/#sudo" in combined_msg
+    # Ensure ls didn't trigger a false positive (though ls isn't risky anyway)
 
 
 def test_audit_file(auditor, tmp_path):
