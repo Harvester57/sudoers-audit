@@ -8,7 +8,7 @@ from .commands import (
 )
 from .privileges import NopasswdRule, FullPrivilegeRule, NegationRule, AuthenticateRule
 from .environment import EnvKeepRule
-from .defaults import SudoDefaultsRule
+from .defaults import SudoDefaultsRule, RequireTtyRule
 from .risky_binaries import RiskyBinariesRule
 from .permissions import FileOwnerRule, FileWriteRule, ParentDirectoryRule
 
@@ -25,6 +25,7 @@ def get_all_rules() -> List[AuditRule]:
         AuthenticateRule(),
         EnvKeepRule(),
         SudoDefaultsRule(),
+        RequireTtyRule(),
         RiskyBinariesRule(),
     ]
 

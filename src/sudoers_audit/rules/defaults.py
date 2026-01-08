@@ -13,6 +13,12 @@ class SudoDefaultsRule(AuditRule):
             if "visiblepw" in line:
                 issues.append("LOW: 'visiblepw' enabled. Password may be visible.")
 
+        return issues
+
+
+class RequireTtyRule(AuditRule):
+    def check(self, line: str) -> List[str]:
+        issues = []
         if "!requiretty" in line:
             issues.append(
                 "MEDIUM: '!requiretty' detected. May facilitate automated attacks/scripts."
