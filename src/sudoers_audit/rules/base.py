@@ -1,5 +1,6 @@
 from typing import Protocol, List
 from dataclasses import dataclass
+import os
 
 
 @dataclass
@@ -12,4 +13,6 @@ class AuditRule(Protocol):
 
 
 class PathRule(Protocol):
-    def check_path(self, path: str) -> List[str]: ...
+    def check_path(
+        self, path: str, stat_info: "os.stat_result | None" = None
+    ) -> List[str]: ...

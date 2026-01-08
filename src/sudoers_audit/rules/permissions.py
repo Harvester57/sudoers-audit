@@ -5,9 +5,11 @@ from .base import PathRule
 
 
 class FileOwnerRule(PathRule):
-    def check_path(self, path: str) -> List[str]:
+    def check_path(
+        self, path: str, stat_info: "os.stat_result | None" = None
+    ) -> List[str]:
         try:
-            st = os.stat(path)
+            st = stat_info if stat_info else os.stat(path)
             if st.st_uid != 0:
                 return [
                     f"CRITICAL: File '{path}' is not owned by root (owner uid: {st.st_uid}). Mutable by non-root."
@@ -18,10 +20,12 @@ class FileOwnerRule(PathRule):
 
 
 class FileWriteRule(PathRule):
-    def check_path(self, path: str) -> List[str]:
+    def check_path(
+        self, path: str, stat_info: "os.stat_result | None" = None
+    ) -> List[str]:
         issues = []
         try:
-            st = os.stat(path)
+            st = stat_info if stat_info else os.stat(path)
             if st.st_mode & stat.S_IWGRP:
                 issues.append(
                     f"CRITICAL: File '{path}' is writable by group. Potential for modification."
@@ -36,7 +40,9 @@ class FileWriteRule(PathRule):
 
 
 class ParentDirectoryRule(PathRule):
-    def check_path(self, path: str) -> List[str]:
+    def check_path(
+        self, path: str, stat_info: "os.stat_result | None" = None
+    ) -> List[str]:
         issues = []
         parent_dir = os.path.dirname(path)
         if os.path.exists(parent_dir):

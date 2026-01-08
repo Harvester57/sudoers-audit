@@ -59,8 +59,9 @@ class SudoersAuditor:
                 )
                 return issues
 
+            st = os.stat(path)
             for rule in self.path_rules:
-                issues.extend(rule.check_path(path))
+                issues.extend(rule.check_path(path, stat_info=st))
 
         except OSError as e:
             issues.append(f"WARNING: Could not check permissions for '{path}': {e}")
