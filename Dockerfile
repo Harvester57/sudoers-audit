@@ -1,6 +1,6 @@
 ARG BUILDKIT_SBOM_SCAN_STAGE=true
 # Cf. https://hub.docker.com/r/chainguard/python/
-FROM chainguard/python:latest-dev@sha256:22f5e61aee4674dbab203655a7a4530f4f7a9e08b81ec781e68a8c3230ae07f7 AS builder
+FROM chainguard/python:latest-dev@sha256:601a4d2278e75935bf67650e9edc16365388039092549bda6c320ea556dbd9bc AS builder
 
 ENV LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -20,7 +20,7 @@ COPY src/ ./src/
 RUN pip install .
 
 # Cf. https://hub.docker.com/r/chainguard/python/
-FROM chainguard/python:latest@sha256:c61c2d11da44d85e79d8957bd1d21ba4b0313e96801b460bb3f44d256e5beb58
+FROM chainguard/python:latest@sha256:678e879909418cd070927d0ba1ed018be98d43929db2457c37b9b9764703678c
 
 LABEL maintainer="florian.stosse@gmail.com"
 LABEL lastupdate="2026-01-07"
