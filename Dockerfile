@@ -1,6 +1,6 @@
 ARG BUILDKIT_SBOM_SCAN_STAGE=true
 # Cf. https://hub.docker.com/r/chainguard/python/
-FROM chainguard/python:latest-dev@sha256:b987be504ef0c57387ef039a2ad79d495d18db017e9cfa10ff3e04204dd106cb AS builder
+FROM chainguard/python:latest-dev@sha256:42fdb3929d1c051cf648dec4d9d84518b12a67f08cb8e256cdca96d89fbb49b9 AS builder
 
 ENV LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
